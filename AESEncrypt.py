@@ -2,6 +2,8 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes
 import binascii
+from CommonMethod import to_csharp_format
+from CommonMethod import to_cplusplus_format
 
 def Aes_encrypt(shellcode):
     key = b'\x96\x99\xa8\xce_[\xc4\xf88TV\xfd%[\xa6\x8e\xc4\n\x87\x12\xf8\x88\\\xdc\x82\xb79,\x9d\xb3\x81\xc0'
@@ -11,11 +13,6 @@ def Aes_encrypt(shellcode):
     cipher = AES.new(key, AES.MODE_CBC, iv)  # 使用CBC模式进行加密
     ciphertext = cipher.encrypt(pad(shellcode, AES.block_size))  # 填充并加密
     return ciphertext
-
-def to_cplusplus_format(encrypted_shellcode):
-    cpp_shellcode = ', '.join(f'0x{byte:02X}' for byte in encrypted_shellcode)
-    cpp_code = f'BYTE encryptedShellcode[] = {{ {cpp_shellcode} }};'
-    return cpp_code
 
 
 buf =  b""
