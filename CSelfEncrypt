@@ -1,0 +1,65 @@
+#pragma once
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+/*
+void generate_substitution_table(std::vector<unsigned char>& table) {
+    for (int i = 0; i < 256; ++i) {
+        table[i] = i;
+    }
+    std::random_shuffle(table.begin(), table.end()); // 随机打乱替换表
+}
+*/
+unsigned char nonlinear_transform(unsigned char byte) {
+    // 简单的非线性变换
+    return (byte * 37 + 113) % 256;
+}
+
+
+
+void swap_bytes(BYTE* data, size_t length) {
+    for (size_t i = 0; i < length - 1; i += 2) {
+        std::swap(data[i], data[i + 1]); // 打乱字节顺序
+    }
+}
+
+void SelfDecrypt(BYTE* encryptedShellcode, BYTE* decryptedShellcode, size_t length) {
+    //std::vector<unsigned char> substitution_table(256);
+    //generate_substitution_table(substitution_table); // 生成替换表
+
+    // 反向解密操作
+
+    std::copy(encryptedShellcode, encryptedShellcode + length, decryptedShellcode);
+
+    //cout << sizeof(encryptedShellcode)<< endl;
+
+    swap_bytes(decryptedShellcode, length); // 打乱字节顺序后还原
+
+    for (size_t i = 0; i < length; ++i) {
+        unsigned char byte = decryptedShellcode[i];
+        byte = byte ^ 0xBB; // 反向异或
+        //byte = std::find(substitution_table.begin(), substitution_table.end(), byte) - substitution_table.begin(); // 查找替换
+        byte = nonlinear_transform(byte); // 非线性变换
+        decryptedShellcode[i] = byte;
+    }
+}
+
+/*
+int main() {
+    BYTE encryptedShellcode[] = { 0x9A, 0xBC, 0xD2, 0xA3, 0xF1, 0x99 }; // 假设已加密的数据
+    size_t length = sizeof(encryptedShellcode) / sizeof(encryptedShellcode[0]);
+    BYTE decryptedShellcode[length];
+    BYTE key = 0xAA;  // 固定密钥
+
+    decrypt(encryptedShellcode, decryptedShellcode, length, key);
+
+    std::cout << "Decrypted shellcode: ";
+    for (size_t i = 0; i < length; ++i) {
+        std::cout << std::hex << (int)decryptedShellcode[i] << " ";
+    }
+    std::cout << std::endl;
+
+    return 0;
+}
+*/

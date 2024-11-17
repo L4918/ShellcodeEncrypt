@@ -2,6 +2,7 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes
 import binascii
+
 from CommonMethod import to_csharp_format
 from CommonMethod import to_cplusplus_format
 
